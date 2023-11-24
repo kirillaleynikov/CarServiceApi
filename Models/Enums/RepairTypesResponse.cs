@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarService.Services.Contracts.Models.Enums
+namespace CarService.Api.Models.Enums
 {
-    public enum RepairTypesResponce
+    public enum RepairTypesResponse
     {
         /// <summary>
         /// Не определён

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarService.Services.Contracts.Models.Enums
+namespace CarService.Api.Models.Enums
 {
-    public enum RepairTypesResponce
+    public enum RoomTypesResponse
     {
         /// <summary>
         /// Не определён
@@ -14,18 +14,13 @@ namespace CarService.Services.Contracts.Models.Enums
         None,
 
         /// <summary>
-        /// Не начат
+        /// Свободно
         /// </summary>
-        NotStarted,
+        Free,
 
         /// <summary>
-        /// В процессе
+        /// Занято
         /// </summary>
-        InProgress,
-
-        /// <summary>
-        /// Закончен
-        /// </summary>
-        Finished
+        Busy
     }
 }

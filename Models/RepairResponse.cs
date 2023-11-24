@@ -1,11 +1,17 @@
-﻿using CarService.Services.Contracts.Models.Enums;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CarService.Api.Models;
+using CarService.Api.Models.Enums;
 
-namespace CarService.Services.Contracts.Models
+namespace CarService.Api.Models
 {
     /// <summary>
     /// Ремонт
     /// </summary>
-    public class RepairModel
+    public class RepairResponse
     {
         /// <summary>
         /// Оказанная услуга
@@ -47,12 +53,11 @@ namespace CarService.Services.Contracts.Models
         /// Статус ремонта
         /// </summary>
 
-        /// <inheritdoc cref="RepairTypes"/>
-        public RepairTypesResponce RepairType { get; set; }
+        /// <inheritdoc cref="RepairTypesResponse"/>
+        public RepairTypesResponse RepairType { get; set; }
         /// <summary>
         /// Стоимость ремонта
         /// </summary>
-
         public int Price { get; set; }
     }
 }
