@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CarService.Context.Contracts.Enums;
+﻿using CarService.Services.Contracts.Models.Enums;
 
-namespace CarService.Context.Contracts.Models
+namespace CarService.Services.Contracts.Models
 {
     /// <summary>
     /// Ремонт
     /// </summary>
-    public class Repair : BaseAuditEntity
+    public class RepairModel
     {
         /// <summary>
         /// Оказанная услуга
@@ -53,10 +48,11 @@ namespace CarService.Context.Contracts.Models
         /// </summary>
 
         /// <inheritdoc cref="RepairTypes"/>
-        public RepairTypes RepairType { get; set; }
+        public RepairTypesModel RepairType { get; set; }
         /// <summary>
         /// Стоимость ремонта
         /// </summary>
+
         public int Price { get; set; }
     }
 }

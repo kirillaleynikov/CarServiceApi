@@ -1,7 +1,7 @@
 ﻿using CarService.Context.Contracts.Models;
 using System;
 
-namespace AutoService.Context.Contracts.Models
+namespace CarService.Context.Contracts.Models
 {
     /// <summary>
     /// Клиент
