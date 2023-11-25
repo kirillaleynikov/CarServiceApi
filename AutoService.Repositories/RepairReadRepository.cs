@@ -4,18 +4,18 @@ using CarService.Repositories.Contracts;
 
 namespace CarService.Repositories
 {
-    public class DisciplineReadRepository : IRepairReadRepository
+    public class RepairReadRepository : IRepairReadRepository
     {
         private readonly ICarServiceContext context;
 
-        public DisciplineReadRepository(ICarServiceContext context)
+        public RepairReadRepository(ICarServiceContext context)
         {
             this.context = context;
         }
 
         Task<List<Repair>> IRepairReadRepository.GetAllAsync(CancellationToken cancellationToken)
             => Task.FromResult(context.Repairs.Where(x => x.DeletedAt == null)
-                .OrderBy(x => x.Name)
+                .OrderBy(x => x.Service)
                 .ToList());
 
         Task<Repair?> IRepairReadRepository.GetByIdAsync(Guid id, CancellationToken cancellationToken)

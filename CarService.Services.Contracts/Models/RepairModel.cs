@@ -48,7 +48,7 @@ namespace CarService.Services.Contracts.Models
         /// </summary>
 
         /// <inheritdoc cref="RepairTypes"/>
-        public RepairTypesResponce RepairType { get; set; }
+        public RepairTypesModel RepairType { get; set; }
         /// <summary>
         /// Стоимость ремонта
         /// </summary>

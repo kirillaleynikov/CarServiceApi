@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CarService.Services.Contracts.Models.Enums
 {
-    public enum RepairTypesResponce
+    public enum RepairTypesModel
     {
         /// <summary>
         /// Не определён

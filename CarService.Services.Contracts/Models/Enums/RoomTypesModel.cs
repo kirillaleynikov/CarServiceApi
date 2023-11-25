@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CarService.Services.Contracts.Models.Enums
 {
-    public enum RoomTypesResponce
+    public enum RoomTypesModel
     {
         /// <summary>
         /// Не определён
