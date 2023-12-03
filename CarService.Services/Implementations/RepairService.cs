@@ -1,5 +1,4 @@
-﻿using CarService.Context.Contracts.Enums;
-using CarService.Repositories.Contracts;
+﻿using CarService.Repositories.Contracts;
 using CarService.Services.Contracts;
 using CarService.Services.Contracts.Models;
 
