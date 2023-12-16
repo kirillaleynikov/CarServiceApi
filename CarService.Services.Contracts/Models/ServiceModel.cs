@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarService.Context.Contracts.Models
+namespace CarService.Services.Contracts.Models
 {
     /// <summary>
-    /// Запчасть
+    /// Услуга
     /// </summary>
-    public class Part : BaseAuditEntity
+    public class ServiceModel
     {
         /// <summary>
         /// Id
@@ -23,13 +23,5 @@ namespace CarService.Context.Contracts.Models
         /// Стоимость
         /// </summary>
         public int Price { get; set; }
-        /// <summary>
-        /// Автомобиль
-        /// </summary>
-        public string Auto { get; set; } = string.Empty;
-        /// <summary>
-        /// Страна производства
-        /// </summary>
-        public string Country { get; set; } = string.Empty;
     }
 }

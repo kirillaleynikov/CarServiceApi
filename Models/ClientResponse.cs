@@ -1,16 +1,18 @@
-﻿using CarService.Context.Contracts.Models;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CarService.Api.Models;
+using CarService.Api.Models.Enums;
 
-namespace CarService.Context.Contracts.Models
+namespace CarService.Api.Models
 {
     /// <summary>
-    /// Клиент
+    /// Ремонт
     /// </summary>
-    public class Client : BaseAuditEntity
+    public class ClientResponse
     {
-        /// <summary>
-        /// ID
-        /// </summary>
         public Guid Id { get; set; }
         /// <summary>
         /// ФИО

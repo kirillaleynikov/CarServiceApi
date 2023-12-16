@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CarService.Api.Models;
+using CarService.Api.Models.Enums;
+using CarService.Context.Contracts.Enums;
 
-namespace CarService.Context.Contracts.Models
+namespace CarService.Api.Models
 {
     /// <summary>
-    /// Запчасть
+    /// Ремонт
     /// </summary>
-    public class Part : BaseAuditEntity
+    public class ServiceResponse
     {
         /// <summary>
         /// Id
@@ -23,13 +26,5 @@ namespace CarService.Context.Contracts.Models
         /// Стоимость
         /// </summary>
         public int Price { get; set; }
-        /// <summary>
-        /// Автомобиль
-        /// </summary>
-        public string Auto { get; set; } = string.Empty;
-        /// <summary>
-        /// Страна производства
-        /// </summary>
-        public string Country { get; set; } = string.Empty;
     }
 }

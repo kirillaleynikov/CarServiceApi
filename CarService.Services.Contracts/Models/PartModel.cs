@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarService.Context.Contracts.Models
+namespace CarService.Services.Contracts.Models
 {
     /// <summary>
     /// Запчасть
     /// </summary>
-    public class Part : BaseAuditEntity
+    public class PartModel
     {
         /// <summary>
         /// Id

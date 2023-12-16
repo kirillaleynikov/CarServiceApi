@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CarService.Api.Models;
+using CarService.Api.Models.Enums;
 
-namespace CarService.Context.Contracts.Models
+namespace CarService.Api.Models
 {
     /// <summary>
-    /// Запчасть
+    /// Ремонт
     /// </summary>
-    public class Part : BaseAuditEntity
+    public class PartResponse
     {
         /// <summary>
         /// Id

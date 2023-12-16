@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CarService.Context.Contracts.Enums;
+using CarService.Services.Contracts.Models.Enums;
 
-namespace CarService.Context.Contracts.Models
+namespace CarService.Services.Contracts.Models
 {
     /// <summary>
     /// Помещение для ремонта
     /// </summary>
-    public class Room : BaseAuditEntity
+    public class RoomModel
     {
         /// <summary>
         /// Id
@@ -27,11 +27,11 @@ namespace CarService.Context.Contracts.Models
         /// <summary>
         /// Ответственный за помещение
         /// </summary>
-        public Employee EmployeeId { get; set; }
+        public EmployeeModel? EmployeeId { get; set; }
         /// <summary>
         /// Статус помещения
         /// </summary>
         /// <inheritdoc cref="RoomTypes"/>
-        public RoomTypes RoomType { get; set; }
+        public RoomTypesModel RoomType { get; set; }
     }
 }

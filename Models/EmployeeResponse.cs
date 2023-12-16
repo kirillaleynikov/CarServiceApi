@@ -1,16 +1,18 @@
-﻿using CarService.Context.Contracts.Models;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CarService.Api.Models;
+using CarService.Api.Models.Enums;
 
-namespace CarService.Context.Contracts.Models
+namespace CarService.Api.Models
 {
     /// <summary>
-    /// Клиент
+    /// Ремонт
     /// </summary>
-    public class Client : BaseAuditEntity
+    public class EmployeeResponse
     {
-        /// <summary>
-        /// ID
-        /// </summary>
         public Guid Id { get; set; }
         /// <summary>
         /// ФИО
@@ -24,9 +26,5 @@ namespace CarService.Context.Contracts.Models
         /// Номер телефона
         /// </summary>
         public string PhoneNumber { get; set; } = string.Empty;
-        /// <summary>
-        /// E-mail
-        /// </summary>
-        public string Email { get; set; } = string.Empty;
     }
 }

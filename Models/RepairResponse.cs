@@ -3,27 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CarService.Context.Contracts.Enums;
+using CarService.Api.Models;
+using CarService.Api.Models.Enums;
 
-namespace CarService.Context.Contracts.Models
+namespace CarService.Api.Models
 {
     /// <summary>
     /// Ремонт
     /// </summary>
-    public class Repair : BaseAuditEntity
+    public class RepairResponse
     {
         /// <summary>
         /// Оказанная услуга
         /// </summary>
-        public Service Service { get; set; }
+        public Guid Service { get; set; }
         /// <summary>
         /// Деталь к замене
         /// </summary>
-        public Part PartToChange { get; set; }
+        public Guid? PartToChange { get; set; }
         /// <summary>
         /// Имя клиента
         /// </summary>
-        public Client ClientName { get; set; }
+        public Guid ClientName { get; set; }
         /// <summary>
         /// Марка машины клиента
         /// </summary>
@@ -35,11 +36,11 @@ namespace CarService.Context.Contracts.Models
         /// <summary>
         /// Номер телефона клиента
         /// </summary>
-        public Client ClientPhoneNumber { get; set; }
+        public Guid ClientPhoneNumber { get; set; }
         /// <summary>
         /// Номер помещения
         /// </summary>
-        public Room RoomNumber { get; set; }
+        public Guid RoomNumber { get; set; }
         /// <summary>
         /// Дата начала ремонта
         /// </summary>
@@ -52,8 +53,8 @@ namespace CarService.Context.Contracts.Models
         /// Статус ремонта
         /// </summary>
 
-        /// <inheritdoc cref="RepairTypes"/>
-        public RepairTypes RepairType { get; set; }
+        /// <inheritdoc cref="RepairTypesResponse"/>
+        public RepairTypesResponse RepairType { get; set; }
         /// <summary>
         /// Стоимость ремонта
         /// </summary>

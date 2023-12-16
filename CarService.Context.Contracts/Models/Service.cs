@@ -9,7 +9,7 @@ namespace CarService.Context.Contracts.Models
     /// <summary>
     /// Услуга
     /// </summary>
-    public class Service
+    public class Service : BaseAuditEntity
     {
         /// <summary>
         /// Id
