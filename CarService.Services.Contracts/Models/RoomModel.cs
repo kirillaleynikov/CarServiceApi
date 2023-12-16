@@ -27,7 +27,7 @@ namespace CarService.Services.Contracts.Models
         /// <summary>
         /// Ответственный за помещение
         /// </summary>
-        public Guid EmployeeId { get; set; }
+        public EmployeeModel? EmployeeId { get; set; }
         /// <summary>
         /// Статус помещения
         /// </summary>

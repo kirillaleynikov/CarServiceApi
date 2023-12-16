@@ -15,15 +15,15 @@ namespace CarService.Context.Contracts.Models
         /// <summary>
         /// Оказанная услуга
         /// </summary>
-        public Guid Service { get; set; }
+        public Service Service { get; set; }
         /// <summary>
         /// Деталь к замене
         /// </summary>
-        public Guid? PartToChange { get; set; }
+        public Part PartToChange { get; set; }
         /// <summary>
         /// Имя клиента
         /// </summary>
-        public Guid ClientName { get; set; }
+        public Client ClientName { get; set; }
         /// <summary>
         /// Марка машины клиента
         /// </summary>
@@ -35,11 +35,11 @@ namespace CarService.Context.Contracts.Models
         /// <summary>
         /// Номер телефона клиента
         /// </summary>
-        public Guid ClientPhoneNumber { get; set; }
+        public Client ClientPhoneNumber { get; set; }
         /// <summary>
         /// Номер помещения
         /// </summary>
-        public Guid RoomNumber { get; set; }
+        public Room RoomNumber { get; set; }
         /// <summary>
         /// Дата начала ремонта
         /// </summary>

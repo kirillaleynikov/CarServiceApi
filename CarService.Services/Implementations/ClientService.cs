@@ -1,29 +1,27 @@
-﻿using CarService.Repositories.Contracts;
+﻿using AutoMapper;
+using CarService.Context.Contracts.Models;
+using CarService.Repositories.Contracts;
 using CarService.Services.Contracts;
 using CarService.Services.Contracts.Models;
+using System.Data;
 
 namespace CarService.Services.Implementations
 {
-    public class ClientService : IClientService
+    public class ClientService : IClientService, IServiceAnchor
     {
         private readonly IClientReadRepository clientReadRepository;
-
-        public ClientService(IClientReadRepository clientReadRepository)
+        private readonly IMapper mapper;
+        public ClientService(IClientReadRepository clientReadRepository
+            IMapper mapper)
         {
             this.clientReadRepository = clientReadRepository;
+            this.mapper = mapper;
         }
 
         async Task<IEnumerable<ClientModel>> IClientService.GetAllAsync(CancellationToken cancellationToken)
         {
             var result = await clientReadRepository.GetAllAsync(cancellationToken);
-            return result.Select(x => new ClientModel
-            {
-                Id = x.Id,
-                Name = x.Name,
-                DateOfBirth = x.DateOfBirth,
-                PhoneNumber = x.PhoneNumber,
-                Email = x.Email,
-            });
+            return mapper.Map<IEnumerable<ClientModel>>(result);
         }
 
         async Task<ClientModel?> IClientService.GetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -31,17 +29,9 @@ namespace CarService.Services.Implementations
             var item = await clientReadRepository.GetByIdAsync(id, cancellationToken);
             if (item == null)
             {
-                return null;
+                throw new AutoServiceEntityNotFoundException<Client>(id);
             }
-
-            return new ClientModel
-            {
-                Id = item.Id,
-                Name = item.Name,
-                DateOfBirth = item.DateOfBirth,
-                PhoneNumber = item.PhoneNumber,
-                Email = item.Email,
-            };
+            return mapper.Map<ClientModel>(item); 
         }
     }
 }

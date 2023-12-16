@@ -7,8 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.EnumMapping" Version="3.1.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarService.Common\CarService.Common.csproj" />
     <ProjectReference Include="..\CarService.Repositories.Contracts\CarService.Repositories.Contracts.csproj" />
     <ProjectReference Include="..\CarService.Services.Contracts\CarService.Services.Contracts.csproj" />
+    <ProjectReference Include="..\CarService.Shared\CarService.Shared.csproj" />
   </ItemGroup>
 
 </Project>
