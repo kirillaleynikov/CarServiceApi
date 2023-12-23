@@ -43,15 +43,14 @@ namespace CarService.Services.Implementations
             return mapper.Map<EmployeeModel>(item);
         }
 
-        async Task<EmployeeModel> IEmployeeService.AddAsync(string name, DateTime dateOfBirth, string phoneNumber, string email, CancellationToken cancellationToken)
+        async Task<EmployeeModel> IEmployeeService.AddAsync(string name, DateTime dateOfBirth, string phoneNumber, CancellationToken cancellationToken)
         {
-            var item = new Client
+            var item = new Employee
             {
                 Id = Guid.NewGuid(),
                 Name = name,
                 DateOfBirth = dateOfBirth,
                 PhoneNumber = phoneNumber,
-                Email = email
             };
 
             employeeWriteRepository.Add(item);
@@ -61,36 +60,35 @@ namespace CarService.Services.Implementations
 
         async Task<EmployeeModel> IEmployeeService.EditAsync(EmployeeModel source, CancellationToken cancellationToken)
         {
-            var targetClient = await employeeReadRepository.GetByIdAsync(source.Id, cancellationToken);
-            if (targetClient == null)
+            var targetEmployee = await employeeReadRepository.GetByIdAsync(source.Id, cancellationToken);
+            if (targetEmployee == null)
             {
                 throw new CarServiceEntityNotFoundException<Client>(source.Id);
             }
 
-            targetClient.Name = source.Name;
-            targetClient.DateOfBirth = source.DateOfBirth;
-            targetClient.PhoneNumber = source.PhoneNumber;
-            targetClient.Email = source.Email;
-            employeeWriteRepository.Update(targetClient);
+            targetEmployee.Name = source.Name;
+            targetEmployee.DateOfBirth = source.DateOfBirth;
+            targetEmployee.PhoneNumber = source.PhoneNumber;
+            employeeWriteRepository.Update(targetEmployee);
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
-            return mapper.Map<EmployeeModel>(targetClient);
+            return mapper.Map<EmployeeModel>(targetEmployee);
         }
 
         async Task IEmployeeService.DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var targetClient = await employeeReadRepository.GetByIdAsync(id, cancellationToken);
-            if (targetClient == null)
+            var targetEmployee = await employeeReadRepository.GetByIdAsync(id, cancellationToken);
+            if (targetEmployee == null)
             {
                 throw new CarServiceEntityNotFoundException<Client>(id);
             }
 
-            if (targetClient.DeletedAt.HasValue)
+            if (targetEmployee.DeletedAt.HasValue)
             {
-                throw new CarServiceInvalidOperationException($"Клиент с идентификатором {id} уже удален");
+                throw new CarServiceInvalidOperationException($"Сотрудник с идентификатором {id} уже удален");
             }
 
-            employeeWriteRepository.Delete(targetClient);
+            employeeWriteRepository.Delete(targetEmployee);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }

@@ -12,6 +12,12 @@ namespace CarService.Services.Contracts.Interface
         /// <summary>
         /// Получить <see cref="EmployeeModel"/> по идентификатору
         /// </summary>
-        Task<EmployeeModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<EmployeeModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
+        Task<EmployeeModel> AddAsync(string name, DateTime dateOfBirth, string phoneNumber, CancellationToken cancellationToken);
+
+        Task<EmployeeModel> EditAsync(EmployeeModel source, CancellationToken cancellationToken);
+
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
     }
 }
