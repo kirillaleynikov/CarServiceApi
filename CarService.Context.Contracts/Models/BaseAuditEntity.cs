@@ -1,9 +1,17 @@
-﻿namespace CarService.Context.Contracts.Models
+﻿using CarService.Common.Entity;
+using CarService.Common.Entity.EntityInterface;
+
+namespace CarService.Context.Contracts.Models
 {
     /// <summary>
     /// Базовый класс с аудитом
     /// </summary>
-    public abstract class BaseAuditEntity
+    public abstract class BaseAuditEntity :
+        IEntity,
+        IEntityWithId,
+        IEntityAuditCreated,
+        IEntityAuditUpdated,
+        IEntityAuditDeleted
     {
         /// <summary>
         /// Идентификатор

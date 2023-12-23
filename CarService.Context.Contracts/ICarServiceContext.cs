@@ -1,7 +1,5 @@
-﻿using System.Reflection.Metadata;
-using System.Text.RegularExpressions;
-using System;
-using CarService.Context.Contracts.Models;
+﻿using CarService.Context.Contracts.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarService.Context.Contracts
 {
@@ -10,15 +8,16 @@ namespace CarService.Context.Contracts
     /// </summary>
     public interface ICarServiceContext
     {
-        IEnumerable<Client> Clients { get; }
+        DbSet<Client> Clients { get; }
 
-        IEnumerable<Employee> Employees { get; }
-        IEnumerable<Repair> Repairs { get; }
+        DbSet<Employee> Employees { get; }
 
-        IEnumerable<Part> Parts { get; }
+        DbSet<Repair> Repairs { get; }
 
-        IEnumerable<Room> Rooms { get; }
+        DbSet<Part> Parts { get; }
 
-        IEnumerable<Service> Services { get; }
+        DbSet<Room> Rooms { get; }
+
+        DbSet<Service> Services { get; }
     }
 }

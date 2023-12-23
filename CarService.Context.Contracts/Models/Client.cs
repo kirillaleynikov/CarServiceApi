@@ -1,17 +1,10 @@
-﻿using CarService.Context.Contracts.Models;
-using System;
-
-namespace CarService.Context.Contracts.Models
+﻿namespace CarService.Context.Contracts.Models
 {
     /// <summary>
     /// Клиент
     /// </summary>
     public class Client : BaseAuditEntity
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        public Guid Id { get; set; }
         /// <summary>
         /// ФИО
         /// </summary>

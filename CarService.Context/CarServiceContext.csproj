@@ -10,11 +10,27 @@
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.EnumMapping" Version="3.1.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="EnumPerevod" Version="1.0.0" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="FluentValidation" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
     <PackageReference Include="Serilog" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CarService.Common.Entity\CarService.Common.Entity.csproj" />
     <ProjectReference Include="..\CarService.Common\CarService.Common.csproj" />
+    <ProjectReference Include="..\CarService.Context.Configuration\CarService.Context.Configuration.csproj" />
     <ProjectReference Include="..\CarService.Context.Contracts\CarService.Context.Contracts.csproj" />
     <ProjectReference Include="..\CarService.Shared\CarService.Shared.csproj" />
   </ItemGroup>

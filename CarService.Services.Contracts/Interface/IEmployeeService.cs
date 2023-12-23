@@ -1,6 +1,6 @@
 ﻿using CarService.Services.Contracts.Models;
 
-namespace CarService.Services.Contracts
+namespace CarService.Services.Contracts.Interface
 {
     public interface IEmployeeService
     {
