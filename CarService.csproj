@@ -30,8 +30,18 @@
 
   <ItemGroup>
     <ProjectReference Include="AutoService.Repositories\CarService.Repositories.csproj" />
+    <ProjectReference Include="CarService.Common\CarService.Common.csproj" />
     <ProjectReference Include="CarService.Context\CarServiceContext.csproj" />
     <ProjectReference Include="CarService.Services\CarService.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Infrastructures\Validator\" />
+    <Folder Include="ModelsRequest\Employee\" />
+    <Folder Include="ModelsRequest\Service\" />
+    <Folder Include="ModelsRequest\Room\" />
+    <Folder Include="ModelsRequest\Repair\" />
+    <Folder Include="ModelsRequest\Part\" />
   </ItemGroup>
 
 </Project>

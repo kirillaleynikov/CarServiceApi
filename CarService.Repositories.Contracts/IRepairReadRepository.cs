@@ -10,7 +10,7 @@ namespace CarService.Repositories.Contracts
         /// <summary>
         /// Получить список всех <see cref="Repair"/>
         /// </summary>
-        Task<List<Repair>> GetAllAsync(CancellationToken cancellationToken);
+        Task<IReadOnlyCollection<Repair>> GetAllByDateAsync(DateTimeOffset startDate, DateTimeOffset endDate, CancellationToken cancellationToken);
 
         /// <summary>
         /// Получить <see cref="Repair"/> по идентификатору

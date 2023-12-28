@@ -3,7 +3,6 @@ using CarService.Context.Contracts.Models;
 using Microsoft.EntityFrameworkCore;
 using CarService.Common.Entity.InterfaceDB;
 using CarService.Context.Configuration;
-using System.Collections.Generic;
 using Serilog;
 
 namespace CarService.Context

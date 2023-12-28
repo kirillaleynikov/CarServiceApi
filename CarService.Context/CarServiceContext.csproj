@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CarService.Common.Entity\CarService.Common.Entity.csproj" />
     <ProjectReference Include="..\CarService.Common\CarService.Common.csproj" />
     <ProjectReference Include="..\CarService.Context.Configuration\CarService.Context.Configuration.csproj" />
     <ProjectReference Include="..\CarService.Context.Contracts\CarService.Context.Contracts.csproj" />

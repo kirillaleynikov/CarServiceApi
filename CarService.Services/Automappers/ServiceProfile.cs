@@ -22,9 +22,13 @@ namespace CarService.Services.Automappers
                             .ConvertUsingEnumMapping(opt => opt.MapByName())
                             .ReverseMap();
 
+
+
             CreateMap<RoomTypes, RoomTypesModel>()
                             .ConvertUsingEnumMapping(opt => opt.MapByName())
                             .ReverseMap();
+
+            CreateMap<Room, RoomModel>(MemberList.Destination);
 
             CreateMap<Service, ServiceModel>(MemberList.Destination);
 

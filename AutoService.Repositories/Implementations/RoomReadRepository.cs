@@ -1,24 +1,43 @@
-﻿using CarService.Context.Contracts;
+﻿using CarService.Common.Entity.InterfaceDB;
+using CarService.Common.Entity.Repositories;
+using CarService.Context.Contracts;
 using CarService.Context.Contracts.Models;
 using CarService.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarService.Repositories
 {
-    public class RoomReadRepository : IRoomReadRepository
+    public class RoomReadRepository : IRoomReadRepository, IRepositoryAnchor
     {
-        private readonly ICarServiceContext context;
+        private readonly IDbRead reader;
 
-        public RoomReadRepository(ICarServiceContext context)
+        public RoomReadRepository(IDbRead reader)
         {
-            this.context = context;
+            this.reader = reader;
         }
 
-        Task<List<Room>> IRoomReadRepository.GetAllAsync(CancellationToken cancellationToken)
-            => Task.FromResult(context.Rooms.Where(x => x.DeletedAt == null)
+        Task<IReadOnlyCollection<Room>> IRoomReadRepository.GetAllAsync(CancellationToken cancellationToken)
+            => reader.Read<Room>()
+                .NotDeletedAt()
                 .OrderBy(x => x.Number)
-                .ToList());
+                .ToReadOnlyCollectionAsync(cancellationToken);
 
         Task<Room?> IRoomReadRepository.GetByIdAsync(Guid id, CancellationToken cancellationToken)
-            => Task.FromResult(context.Rooms.FirstOrDefault(x => x.Id == id));
+            => reader.Read<Room>()
+            .ById(id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        Task<bool> IRoomReadRepository.AnyByIdAsync(Guid id, CancellationToken cancellationToken)
+         => reader.Read<Room>()
+             .NotDeletedAt()
+             .ById(id)
+             .AnyAsync(cancellationToken);
+
+        Task<Dictionary<Guid, Room>> IRoomReadRepository.GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellation)
+            => reader.Read<Room>()
+                .NotDeletedAt()
+                .ByIds(ids)
+                .OrderBy(x => x.Number)
+                .ToDictionaryAsync(key => key.Id, cancellation);
     }
 }

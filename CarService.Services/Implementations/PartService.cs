@@ -42,14 +42,15 @@ namespace CarService.Services.Implementations
             return mapper.Map<PartModel>(item);
         }
 
-        async Task<PartModel> IPartService.AddAsync(string name, DateTime dateOfBirth, string phoneNumber, CancellationToken cancellationToken)
+        async Task<PartModel> IPartService.AddAsync(string name, int price, string auto, string country, CancellationToken cancellationToken)
         {
             var item = new Part
             {
                 Id = Guid.NewGuid(),
                 Name = name,
-                DateOfBirth = dateOfBirth,
-                PhoneNumber = phoneNumber,
+                Price = price,
+                Auto = auto,
+                Country = country
             };
 
             partWriteRepository.Add(item);
@@ -57,18 +58,19 @@ namespace CarService.Services.Implementations
             return mapper.Map<PartModel>(item);
         }
 
-        async Task<PartModel> IPartService.EditAsync(EmployeeModel source, CancellationToken cancellationToken)
+        async Task<PartModel> IPartService.EditAsync(PartModel source, CancellationToken cancellationToken)
         {
             var targetPart = await partReadRepository.GetByIdAsync(source.Id, cancellationToken);
             if (targetPart == null)
             {
-                throw new CarServiceEntityNotFoundException<Client>(source.Id);
+                throw new CarServiceEntityNotFoundException<Part>(source.Id);
             }
 
             targetPart.Name = source.Name;
-            targetPart.DateOfBirth = source.DateOfBirth;
-            targetPart.PhoneNumber = source.PhoneNumber;
-            employeeWriteRepository.Update(targetPart);
+            targetPart.Price = source.Price;
+            targetPart.Auto = source.Auto;
+            targetPart.Country = source.Country;
+            partWriteRepository.Update(targetPart);
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return mapper.Map<PartModel>(targetPart);
@@ -79,12 +81,12 @@ namespace CarService.Services.Implementations
             var targetPart = await partReadRepository.GetByIdAsync(id, cancellationToken);
             if (targetPart == null)
             {
-                throw new CarServiceEntityNotFoundException<Client>(id);
+                throw new CarServiceEntityNotFoundException<Part>(id);
             }
 
             if (targetPart.DeletedAt.HasValue)
             {
-                throw new CarServiceInvalidOperationException($"Запчасть с идентификатором {id} уже удален");
+                throw new CarServiceInvalidOperationException($"Запчасть с идентификатором {id} уже удалена");
             }
 
             partWriteRepository.Delete(targetPart);

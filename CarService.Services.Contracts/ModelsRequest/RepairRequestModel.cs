@@ -1,28 +1,31 @@
 ﻿using CarService.Services.Contracts.Models.Enums;
+using CarService.Services.Contracts.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CarService.Services.Contracts.Models
+namespace CarService.Services.Contracts.ModelsRequest
 {
-    /// <summary>
-    /// Ремонт
-    /// </summary>
-    public class RepairModel
+    public class RepairRequestModel
     {
         /// <summary>
-        /// Идентификатор
+        /// Id
         /// </summary>
         public Guid Id { get; set; }
         /// <summary>
         /// Оказанная услуга
         /// </summary>
-        public ServiceModel? Service { get; set; }
+        public Guid Service { get; set; }
         /// <summary>
         /// Деталь к замене
         /// </summary>
-        public PartModel? PartToChange { get; set; }
+        public Guid PartToChange { get; set; }
         /// <summary>
         /// Имя клиента
         /// </summary>
-        public ClientModel? ClientName { get; set; }
+        public Guid ClientName { get; set; }
         /// <summary>
         /// Марка машины клиента
         /// </summary>
@@ -34,11 +37,11 @@ namespace CarService.Services.Contracts.Models
         /// <summary>
         /// Номер телефона клиента
         /// </summary>
-        public ClientModel? ClientPhoneNumber { get; set; }
+        public Guid ClientPhoneNumber { get; set; }
         /// <summary>
         /// Номер помещения
         /// </summary>
-        public RoomModel? RoomNumber { get; set; }
+        public Guid RoomNumber { get; set; }
         /// <summary>
         /// Дата начала ремонта
         /// </summary>

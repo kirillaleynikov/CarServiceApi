@@ -1,24 +1,43 @@
-﻿using CarService.Context.Contracts;
+﻿using CarService.Common.Entity.InterfaceDB;
+using CarService.Common.Entity.Repositories;
+using CarService.Context.Contracts;
 using CarService.Context.Contracts.Models;
 using CarService.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarService.Repositories
 {
-    public class ServiceReadRepository : IServiceReadRepository
+    public class ServiceReadRepository : IServiceReadRepository, IRepositoryAnchor
     {
-        private readonly ICarServiceContext context;
+        private readonly IDbRead reader;
 
-        public ServiceReadRepository(ICarServiceContext context)
+        public ServiceReadRepository(IDbRead reader)
         {
-            this.context = context;
+            this.reader = reader;
         }
 
-        Task<List<Service>> IServiceReadRepository.GetAllAsync(CancellationToken cancellationToken)
-            => Task.FromResult(context.Services.Where(x => x.DeletedAt == null)
+        Task<IReadOnlyCollection<Service>> IServiceReadRepository.GetAllAsync(CancellationToken cancellationToken)
+            => reader.Read<Service>()
+                .NotDeletedAt()
                 .OrderBy(x => x.Name)
-                .ToList());
+                .ToReadOnlyCollectionAsync(cancellationToken);
 
         Task<Service?> IServiceReadRepository.GetByIdAsync(Guid id, CancellationToken cancellationToken)
-            => Task.FromResult(context.Services.FirstOrDefault(x => x.Id == id));
+            => reader.Read<Service>()
+            .ById(id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        Task<bool> IServiceReadRepository.AnyByIdAsync(Guid id, CancellationToken cancellationToken)
+         => reader.Read<Service>()
+             .NotDeletedAt()
+             .ById(id)
+             .AnyAsync(cancellationToken);
+
+        Task<Dictionary<Guid, Service>> IServiceReadRepository.GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellation)
+            => reader.Read<Service>()
+                .NotDeletedAt()
+                .ByIds(ids)
+                .OrderBy(x => x.Name)
+                .ToDictionaryAsync(key => key.Id, cancellation);
     }
 }

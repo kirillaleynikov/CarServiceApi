@@ -63,7 +63,7 @@ namespace CarService.Services.Implementations
             var targetEmployee = await employeeReadRepository.GetByIdAsync(source.Id, cancellationToken);
             if (targetEmployee == null)
             {
-                throw new CarServiceEntityNotFoundException<Client>(source.Id);
+                throw new CarServiceEntityNotFoundException<Employee>(source.Id);
             }
 
             targetEmployee.Name = source.Name;
@@ -80,7 +80,7 @@ namespace CarService.Services.Implementations
             var targetEmployee = await employeeReadRepository.GetByIdAsync(id, cancellationToken);
             if (targetEmployee == null)
             {
-                throw new CarServiceEntityNotFoundException<Client>(id);
+                throw new CarServiceEntityNotFoundException<Employee>(id);
             }
 
             if (targetEmployee.DeletedAt.HasValue)

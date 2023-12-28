@@ -32,8 +32,4 @@
     <ProjectReference Include="..\CarService.Shared\CarService.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ModelsRequest\" />
-  </ItemGroup>
-
 </Project>

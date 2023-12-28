@@ -1,16 +1,14 @@
-﻿using System;
+﻿using CarService.Services.Contracts.Models.Enums;
+using CarService.Services.Contracts.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CarService.Context.Contracts.Enums;
 
-namespace CarService.Context.Contracts.Models
+namespace CarService.Services.Contracts.ModelsRequest
 {
-    /// <summary>
-    /// Помещение для ремонта
-    /// </summary>
-    public class Room : BaseAuditEntity
+    public class RoomRequestModel
     {
         /// <summary>
         /// Id
@@ -24,19 +22,14 @@ namespace CarService.Context.Contracts.Models
         /// Площадь помещения
         /// </summary>
         public string Square { get; set; } = string.Empty;
-
         /// <summary>
         /// Ответственный за помещение
         /// </summary>
         public Guid EmployeeId { get; set; }
         /// <summary>
-        /// Ответственный за помещение
-        /// </summary>
-        public Employee? Employee { get; set; }
-        /// <summary>
         /// Статус помещения
         /// </summary>
         /// <inheritdoc cref="RoomTypes"/>
-        public RoomTypes RoomType { get; set; }
+        public RoomTypesModel RoomType { get; set; }
     }
 }
