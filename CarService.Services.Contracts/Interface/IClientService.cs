@@ -1,4 +1,5 @@
 ﻿using CarService.Services.Contracts.Models;
+using CarService.Services.Contracts.ModelsRequest;
 
 namespace CarService.Services.Contracts.Interface
 {
@@ -12,9 +13,9 @@ namespace CarService.Services.Contracts.Interface
         /// <summary>
         /// Получить <see cref="ClientModel"/> по идентификатору
         /// </summary>
-        Task<ClientModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<ClientModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
-        Task<ClientModel> AddAsync(string name, DateTime dateOfBirth, string phoneNumber, string email, CancellationToken cancellationToken);
+        Task<ClientModel> AddAsync(ClientModel model, CancellationToken cancellationToken);
 
         Task<ClientModel> EditAsync(ClientModel source, CancellationToken cancellationToken);
 

@@ -32,10 +32,6 @@ namespace CarService.Services.Contracts.Models
         /// </summary>
         public string GosNumber { get; set; } = string.Empty;
         /// <summary>
-        /// Номер телефона клиента
-        /// </summary>
-        public ClientModel? ClientPhoneNumber { get; set; }
-        /// <summary>
         /// Номер помещения
         /// </summary>
         public RoomModel? RoomNumber { get; set; }

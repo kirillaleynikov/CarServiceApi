@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.EnumMapping" Version="3.1.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
@@ -30,18 +34,24 @@
 
   <ItemGroup>
     <ProjectReference Include="AutoService.Repositories\CarService.Repositories.csproj" />
-    <ProjectReference Include="CarService.Common\CarService.Common.csproj" />
     <ProjectReference Include="CarService.Context\CarServiceContext.csproj" />
+    <ProjectReference Include="CarService.General\CarService.General.csproj" />
     <ProjectReference Include="CarService.Services\CarService.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructures\Validator\" />
-    <Folder Include="ModelsRequest\Employee\" />
     <Folder Include="ModelsRequest\Service\" />
     <Folder Include="ModelsRequest\Room\" />
     <Folder Include="ModelsRequest\Repair\" />
     <Folder Include="ModelsRequest\Part\" />
+    <Folder Include="Validators\Repair\" />
+    <Folder Include="Validators\Room\" />
+    <Folder Include="Validators\Service\" />
+    <Folder Include="Validators\Part\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.json" />
   </ItemGroup>
 
 </Project>

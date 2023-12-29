@@ -14,7 +14,7 @@ namespace CarService.Services.Contracts.Interface
         /// </summary>
         Task<EmployeeModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
-        Task<EmployeeModel> AddAsync(string name, DateTime dateOfBirth, string phoneNumber, CancellationToken cancellationToken);
+        Task<EmployeeModel> AddAsync(EmployeeModel model, CancellationToken cancellationToken);
 
         Task<EmployeeModel> EditAsync(EmployeeModel source, CancellationToken cancellationToken);
 

@@ -18,12 +18,12 @@ namespace CarService.Services.Contracts.Interface
         /// <summary>
         /// Добавляет новый ремонт
         /// </summary>
-        Task<RoomModel> AddAsync(RoomRequestModel roomRequestModel, CancellationToken cancellationToken);
+        Task<RoomModel> AddAsync(RoomModel roomRequestModel, CancellationToken cancellationToken);
 
         /// <summary>
         /// Редактирует существующее расписание
         /// </summary>
-        Task<RoomModel> EditAsync(RoomRequestModel source, CancellationToken cancellationToken);
+        Task<RoomModel> EditAsync(RoomModel source, CancellationToken cancellationToken);
 
         /// <summary>
         /// Удаляет существующее расписание

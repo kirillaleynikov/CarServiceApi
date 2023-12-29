@@ -23,5 +23,8 @@ namespace CarService.Context.Contracts.Models
         /// Стоимость
         /// </summary>
         public int Price { get; set; }
+
+        public ICollection<Repair> Repairs { get; set; }
+
     }
 }

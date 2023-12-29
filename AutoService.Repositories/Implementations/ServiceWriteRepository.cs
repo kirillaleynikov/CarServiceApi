@@ -1,5 +1,6 @@
 ﻿using CarService.Common.Entity.InterfaceDB;
 using CarService.Context.Contracts.Models;
+using CarService.Repositories.Anchors;
 using CarService.Repositories.Contracts;
 
 namespace CarService.Repositories.Implementations

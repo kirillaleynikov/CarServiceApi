@@ -25,7 +25,7 @@ namespace CarService.Api.Infrastructures
         /// </summary>
         public ApiAutoMapperProfile()
         {
-            CreateMap<DocumentTypesModel, DocumentTypesResponse>()
+            CreateMap<ClientTypesModel, ClientTypesResponse>()
                 .ConvertUsingEnumMapping(opt => opt.MapByName())
                 .ReverseMap();
             CreateMap<EmployeeTypesModel, EmployeeTypesResponse>()

@@ -1,4 +1,4 @@
-﻿namespace CarService.Shared
+﻿namespace CarService.General
 {
     /// <summary>
     /// Модель инвалидации запросов

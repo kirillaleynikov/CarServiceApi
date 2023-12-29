@@ -6,6 +6,8 @@ using CarService.Common.Entity.InterfaceDB;
 using CarService.Services.Contracts.Exceptions;
 using CarService.Services.Contracts.Interface;
 using System.Data;
+using CarService.Services.Contracts.ModelsRequest;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CarService.Services.Implementations
 {
@@ -15,6 +17,7 @@ namespace CarService.Services.Implementations
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IClientWriteRepository clientWriteRepository;
+        private readonly IServiceValidatorService validatorService;
         public ClientService(IClientReadRepository clientReadRepository,
             IClientWriteRepository clientWriteRepository,
             IUnitOfWork unitOfWork,
@@ -24,12 +27,13 @@ namespace CarService.Services.Implementations
             this.clientWriteRepository = clientWriteRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.validatorService = validatorService;
         }
 
         async Task<IEnumerable<ClientModel>> IClientService.GetAllAsync(CancellationToken cancellationToken)
         {
             var result = await clientReadRepository.GetAllAsync(cancellationToken);
-            return mapper.Map<IEnumerable<ClientModel>>(result);
+            return result.Select(x => mapper.Map<ClientModel>(x));
         }
 
         async Task<ClientModel?> IClientService.GetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -42,37 +46,34 @@ namespace CarService.Services.Implementations
             return mapper.Map<ClientModel>(item); 
         }
 
-        async Task<ClientModel> IClientService.AddAsync(string name, DateTime dateOfBirth, string phoneNumber, string email, CancellationToken cancellationToken)
+        async Task<ClientModel> IClientService.AddAsync(ClientModel model, CancellationToken cancellationToken)
         {
-            var item = new Client
-            {
-                Id = Guid.NewGuid(),
-                Name = name,
-                DateOfBirth = dateOfBirth,
-                PhoneNumber = phoneNumber,
-                Email = email
-            };
+           model.Id = Guid.NewGuid();
+           await validatorService.ValidateAsync(model, cancellationToken);
 
-            clientWriteRepository.Add(item);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-            return mapper.Map<ClientModel>(item);
+           var item = mapper.Map<Client>(model);
+
+           clientWriteRepository.Add(item);
+           await unitOfWork.SaveChangesAsync(cancellationToken);
+
+           return mapper.Map<ClientModel>(item);
         }
 
         async Task<ClientModel> IClientService.EditAsync(ClientModel source, CancellationToken cancellationToken)
         {
+            await validatorService.ValidateAsync(source, cancellationToken);
+
             var targetClient = await clientReadRepository.GetByIdAsync(source.Id, cancellationToken);
             if (targetClient == null)
             {
                 throw new CarServiceEntityNotFoundException<Client>(source.Id);
             }
 
-            targetClient.Name = source.Name;
-            targetClient.DateOfBirth = source.DateOfBirth;
-            targetClient.PhoneNumber = source.PhoneNumber;
-            targetClient.Email = source.Email;
-            clientWriteRepository.Update(targetClient);
+            targetClient = mapper.Map<Client>(source);
 
+            clientWriteRepository.Update(targetClient);
             await unitOfWork.SaveChangesAsync(cancellationToken);
+
             return mapper.Map<ClientModel>(targetClient);
         }
 

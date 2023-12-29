@@ -15,14 +15,17 @@ namespace CarService.Context.Contracts.Models
         /// <summary>
         /// Оказанная услуга
         /// </summary>
+        public Guid ServiceId { get; set; }
         public Service Service { get; set; }
         /// <summary>
         /// Деталь к замене
         /// </summary>
+        public Guid PartId { get; set; }
         public Part PartToChange { get; set; }
         /// <summary>
         /// Имя клиента
         /// </summary>
+        public Guid ClientId { get; set; }
         public Client ClientName { get; set; }
         /// <summary>
         /// Марка машины клиента
@@ -33,12 +36,9 @@ namespace CarService.Context.Contracts.Models
         /// </summary>
         public string GosNumber { get; set; } = string.Empty;
         /// <summary>
-        /// Номер телефона клиента
-        /// </summary>
-        public Client ClientPhoneNumber { get; set; }
-        /// <summary>
         /// Номер помещения
         /// </summary>
+        public Guid RoomId { get; set; }
         public Room RoomNumber { get; set; }
         /// <summary>
         /// Дата начала ремонта
@@ -53,6 +53,7 @@ namespace CarService.Context.Contracts.Models
         /// </summary>
 
         /// <inheritdoc cref="RepairTypes"/>
+        public Guid RepairId { get; set; }
         public RepairTypes RepairType { get; set; }
         /// <summary>
         /// Стоимость ремонта

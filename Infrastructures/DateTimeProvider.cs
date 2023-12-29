@@ -1,6 +1,6 @@
-﻿using TimeTable203.Common;
+﻿using CarService.Common;
 
-namespace TimeTable203.Api.Infrastructures
+namespace CarService.Api.Infrastructures
 {
     public class DateTimeProvider : IDateTimeProvider
     {

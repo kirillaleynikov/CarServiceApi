@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace TimeTable203.Api.Infrastructures
+namespace CarService.Api.Infrastructures
 {
     static internal class DocumentExtensions
     {
@@ -8,14 +8,14 @@ namespace TimeTable203.Api.Infrastructures
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("Discipline", new OpenApiInfo { Title = "Сущность дисциплины", Version = "v1" });
-                c.SwaggerDoc("Document", new OpenApiInfo { Title = "Сущность документы", Version = "v1" });
-                c.SwaggerDoc("Employee", new OpenApiInfo { Title = "Сущность работники", Version = "v1" });
-                c.SwaggerDoc("Group", new OpenApiInfo { Title = "Сущность группы", Version = "v1" });
-                c.SwaggerDoc("Person", new OpenApiInfo { Title = "Сущность ученики", Version = "v1" });
-                c.SwaggerDoc("TimeTableItem", new OpenApiInfo { Title = "Сущность элемент расписания", Version = "v1" });
+                c.SwaggerDoc("Client", new OpenApiInfo { Title = "Сущность клиента", Version = "v1" });
+                c.SwaggerDoc("Employee", new OpenApiInfo { Title = "Сущность сотрудника", Version = "v1" });
+                c.SwaggerDoc("Part", new OpenApiInfo { Title = "Сущность запчасти", Version = "v1" });
+                c.SwaggerDoc("Repair", new OpenApiInfo { Title = "Сущность ремонта", Version = "v1" });
+                c.SwaggerDoc("Room", new OpenApiInfo { Title = "Сущность помещения", Version = "v1" });
+                c.SwaggerDoc("Service", new OpenApiInfo { Title = "Сущность услуги", Version = "v1" });
 
-                var filePath = Path.Combine(AppContext.BaseDirectory, "TimeTable203.Api.xml");
+                var filePath = Path.Combine(AppContext.BaseDirectory, "CarService.Api.xml");
                 c.IncludeXmlComments(filePath);
             });
         }
@@ -24,12 +24,12 @@ namespace TimeTable203.Api.Infrastructures
         {
             app.UseSwaggerUI(x =>
             {
-                x.SwaggerEndpoint("Discipline/swagger.json", "Дисциплины");
-                x.SwaggerEndpoint("Document/swagger.json", "Документы");
-                x.SwaggerEndpoint("Employee/swagger.json", "Работники");
-                x.SwaggerEndpoint("Group/swagger.json", "Группы");
-                x.SwaggerEndpoint("Person/swagger.json", "Ученики");
-                x.SwaggerEndpoint("TimeTableItem/swagger.json", "Элемент расписания");
+                x.SwaggerEndpoint("Client/swagger.json", "Клиенты");
+                x.SwaggerEndpoint("Employee/swagger.json", "Сотрудники");
+                x.SwaggerEndpoint("Part/swagger.json", "Запчасти");
+                x.SwaggerEndpoint("Repair/swagger.json", "Ремонты");
+                x.SwaggerEndpoint("Room/swagger.json", "Помещения");
+                x.SwaggerEndpoint("Service/swagger.json", "Услуги");
             });
         }
     }

@@ -18,13 +18,13 @@ namespace CarService.Repositories.Contracts
         Task<Client?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Проверка есть ли <see cref="Client"/> по указанному id
-        /// </summary>
-        Task<bool> AnyByIdAsync(Guid id, CancellationToken cancellationToken);
-
-        /// <summary>
         /// Получить список <see cref="Client"/> по идентификаторам
         /// </summary>
         Task<Dictionary<Guid, Client>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellation);
+
+        /// <summary>
+        /// Проверить есть ли <see cref="Client"/> в коллеции
+        /// </summary>
+        Task<bool> IsNotNullAsync(Guid id, CancellationToken cancellationToken);
     }
 }

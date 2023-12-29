@@ -35,10 +35,6 @@ namespace CarService.Services.Contracts.ModelsRequest
         /// </summary>
         public string GosNumber { get; set; } = string.Empty;
         /// <summary>
-        /// Номер телефона клиента
-        /// </summary>
-        public Guid ClientPhoneNumber { get; set; }
-        /// <summary>
         /// Номер помещения
         /// </summary>
         public Guid RoomNumber { get; set; }

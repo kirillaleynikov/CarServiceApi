@@ -1,4 +1,4 @@
-﻿namespace CarService.Api.ModelsRequest.Discipline
+﻿namespace CarService.Api.ModelsRequest.Client
 {
     /// <summary>
     /// Модель запроса создания дисциплины

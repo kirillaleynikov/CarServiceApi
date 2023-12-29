@@ -23,8 +23,4 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CarService.Common\CarService.Common.csproj" />
-  </ItemGroup>
-
 </Project>

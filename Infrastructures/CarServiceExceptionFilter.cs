@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using TimeTable203.Api.Models.Exceptions;
-using TimeTable203.Services.Contracts.Exceptions;
+using CarService.Api.Models.Exceptions;
+using CarService.Services.Contracts.Exceptions;
 
-namespace TimeTable203.Api.Infrastructures
+namespace CarService.Api.Infrastructures
 {
     /// <summary>
     /// Фильтр для обработки ошибок раздела администрирования
     /// </summary>
-    public class TimeTableExceptionFilter : IExceptionFilter
+    public class CarServiceExceptionFilter : IExceptionFilter
     {
         /// <inheritdoc/>
         public void OnException(ExceptionContext context)
         {
-            var exception = context.Exception as TimeTableException;
+            var exception = context.Exception as CarServiceException;
             if (exception == null)
             {
                 return;
@@ -21,7 +21,7 @@ namespace TimeTable203.Api.Infrastructures
 
             switch (exception)
             {
-                case TimeTableValidationException ex:
+                case CarServiceValidationException ex:
                     SetDataToContext(
                         new ConflictObjectResult(new ApiValidationExceptionDetail
                         {
@@ -30,7 +30,7 @@ namespace TimeTable203.Api.Infrastructures
                         context);
                     break;
 
-                case TimeTableInvalidOperationException ex:
+                case CarServiceInvalidOperationException ex:
                     SetDataToContext(
                         new BadRequestObjectResult(new ApiExceptionDetail { Message = ex.Message, })
                         {
@@ -39,7 +39,7 @@ namespace TimeTable203.Api.Infrastructures
                         context);
                     break;
 
-                case TimeTableNotFoundException ex:
+                case CarServiceNotFoundException ex:
                     SetDataToContext(new NotFoundObjectResult(new ApiExceptionDetail
                     {
                         Message = ex.Message,

@@ -21,5 +21,7 @@
         /// E-mail
         /// </summary>
         public string Email { get; set; } = string.Empty;
+
+        public ICollection<Repair> Repairs { get; set; }
     }
 }

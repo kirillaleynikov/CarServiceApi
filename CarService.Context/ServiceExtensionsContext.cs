@@ -1,14 +1,20 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using CarService.Common;
 using CarService.Common.Entity.InterfaceDB;
 using CarService.Context.Contracts;
 
 namespace CarService.Context
 {
-    public class ContextModule : Module
+    /// <summary>
+    /// Методы пасширения для <see cref="IServiceCollection"/>
+    /// </summary>
+    public static class ServiceExtensionsContext
     {
-        public override void CreateModule(IServiceCollection service)
+        /// <summary>
+        /// Регистрирует все что связано с контекстом
+        /// </summary>
+        /// <param name="service"></param>
+        public static void RegistrationContext(this IServiceCollection service)
         {
             service.TryAddScoped<ICarServiceContext>(provider => provider.GetRequiredService<CarServiceContext>());
             service.TryAddScoped<IDbRead>(provider => provider.GetRequiredService<CarServiceContext>());

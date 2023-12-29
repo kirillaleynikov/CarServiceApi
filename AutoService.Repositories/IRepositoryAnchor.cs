@@ -1,7 +1,9 @@
-﻿namespace CarService.Repositories
+﻿namespace CarService.Repositories.Anchors
 {
     /// <summary>
-    /// Интерфейсный маркер, для регистрации ReadRepository
+    /// Маркерный интерфейс
     /// </summary>
-    public interface IRepositoryAnchor { };
+    public interface IRepositoryAnchor
+    {
+    }
 }

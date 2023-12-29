@@ -4,6 +4,7 @@ using CarService.Context.Contracts;
 using CarService.Context.Contracts.Models;
 using CarService.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using CarService.Repositories.Anchors;
 
 namespace CarService.Repositories
 {
@@ -27,17 +28,14 @@ namespace CarService.Repositories
             .ById(id)
             .FirstOrDefaultAsync(cancellationToken);
 
-        Task<bool> IRoomReadRepository.AnyByIdAsync(Guid id, CancellationToken cancellationToken)
-         => reader.Read<Room>()
-             .NotDeletedAt()
-             .ById(id)
-             .AnyAsync(cancellationToken);
-
         Task<Dictionary<Guid, Room>> IRoomReadRepository.GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellation)
             => reader.Read<Room>()
                 .NotDeletedAt()
                 .ByIds(ids)
                 .OrderBy(x => x.Number)
                 .ToDictionaryAsync(key => key.Id, cancellation);
+
+        Task<bool> IRoomReadRepository.IsNotNullAsync(Guid id, CancellationToken cancellationToken)
+            => reader.Read<Room>().AnyAsync(x => x.Id == id && !x.DeletedAt.HasValue, cancellationToken);
     }
 }

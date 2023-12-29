@@ -38,5 +38,7 @@ namespace CarService.Context.Contracts.Models
         /// </summary>
         /// <inheritdoc cref="RoomTypes"/>
         public RoomTypes RoomType { get; set; }
+
+        public ICollection<Repair> Repairs { get; set; }
     }
 }

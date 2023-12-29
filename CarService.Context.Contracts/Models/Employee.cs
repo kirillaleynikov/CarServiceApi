@@ -28,5 +28,7 @@ namespace CarService.Context.Contracts.Models
         /// Номер телефона
         /// </summary>
         public string PhoneNumber { get; set; } = string.Empty;
+
+        public ICollection<Repair> Repairs { get; set; }
     }
 }

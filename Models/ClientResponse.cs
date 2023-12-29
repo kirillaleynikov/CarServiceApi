@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CarService.Api.Models;
-using CarService.Api.Models.Enums;
-
-namespace CarService.Api.Models
+﻿namespace CarService.Api.Models
 {
     /// <summary>
     /// Ремонт

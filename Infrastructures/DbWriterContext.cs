@@ -1,10 +1,10 @@
-﻿using TimeTable203.Common;
-using TimeTable203.Common.Entity.InterfaceDB;
+﻿using CarService.Common;
+using CarService.Common.Entity.InterfaceDB;
 
-namespace TimeTable203.Api.Infrastructures
+namespace CarService.Api.Infrastructures
 {
     /// <inheritdoc cref="IDbWriterContext"/>
-    public class DbWriterContext : IDbWriterContext
+    public class DbWriterContext
     {
         /// <summary>
         /// Инициализирует новый экземпляр <see cref="DbWriterContext"/>
@@ -31,6 +31,6 @@ namespace TimeTable203.Api.Infrastructures
         public IDateTimeProvider DateTimeProvider { get; }
 
         /// <inheritdoc/>
-        public string UserName { get; } = "TimeTable203.Api";
+        public string UserName { get; } = "CarService.Api";
     }
 }

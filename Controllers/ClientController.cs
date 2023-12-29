@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using CarService.Api.Attribute;
 using CarService.Api.Infrastructures.Validator;
 using CarService.Api.Models;
-using CarService.Api.ModelsRequest.Discipline;
+using CarService.Api.ModelsRequest.Client;
 using CarService.Services.Contracts.Interface;
 using CarService.Services.Contracts.Models;
+using CarService.Api.ModelsRequest.Client;
+using CarService.Api.Models.Exceptions;
 
 namespace CarService.Api.Controllers
 {
@@ -19,7 +20,6 @@ namespace CarService.Api.Controllers
     public class ClientController : ControllerBase
     {
         private readonly IClientService clientService;
-        //private readonly IApiValidatorService validatorService;
         private readonly IMapper mapper;
 
         public ClientController(IClientService clientService,
@@ -31,33 +31,34 @@ namespace CarService.Api.Controllers
         }
 
         [HttpGet]
-        [ApiOk(typeof(IEnumerable<ClientResponse>))]
+        [ProducesResponseType(typeof(IEnumerable<ClientResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var result = await clientService.GetAllAsync(cancellationToken);
-            return Ok(mapper.Map<IEnumerable<ClientResponse>>(result));
+            return Ok(result.Select(x => mapper.Map<ClientResponse>(x)));
         }
 
         [HttpGet("{id:guid}")]
-        [ApiOk(typeof(ClientResponse))]
-        [ApiNotFound]
-        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById([Required] Guid id, CancellationToken cancellationToken)
         {
-            var result = await clientService.GetByIdAsync(id, cancellationToken);
-            return Ok(mapper.Map<ClientResponse>(result));
+            var item = await clientService.GetByIdAsync(id, cancellationToken);
+            return Ok(mapper.Map<ClientResponse>(item));
         }
 
         /// <summary>
         /// Создаёт новую дисциплину
         /// </summary>
         [HttpPost]
-        [ApiOk(typeof(ClientResponse))]
-        [ApiConflict]
-        public async Task<IActionResult> Create(CreateClientRequest request, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiValidationExceptionsDetail), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Add(CreateClientRequest model, CancellationToken cancellationToken)
         {
-            await validatorService.ValidateAsync(request, cancellationToken);
-
-            var result = await clientService.AddAsync(request.Name, request.Description, cancellationToken);
+            var clientModel = mapper.Map<ClientModel>(model);
+            var result = await clientService.AddAsync(clientModel, cancellationToken);
             return Ok(mapper.Map<ClientResponse>(result));
         }
 
@@ -65,13 +66,13 @@ namespace CarService.Api.Controllers
         /// Редактирует имеющуюся дисциплину
         /// </summary>
         [HttpPut]
-        [ApiOk(typeof(ClientResponse))]
-        [ApiNotFound]
-        [ApiConflict]
+        [ProducesResponseType(typeof(ClientResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiValidationExceptionsDetail), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Edit(ClientRequest request, CancellationToken cancellationToken)
         {
-            await validatorService.ValidateAsync(request, cancellationToken);
-
             var model = mapper.Map<ClientModel>(request);
             var result = await clientService.EditAsync(model, cancellationToken);
             return Ok(mapper.Map<ClientResponse>(result));
@@ -81,10 +82,10 @@ namespace CarService.Api.Controllers
         /// Удаляет имеющуюся дисциплину
         /// </summary>
         [HttpDelete("{id:guid}")]
-        [ApiOk(typeof(ClientResponse))]
-        [ApiNotFound]
-        [ApiNotAcceptable]
-        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status417ExpectationFailed)]
+        public async Task<IActionResult> Delete([Required] Guid id, CancellationToken cancellationToken)
         {
             await clientService.DeleteAsync(id, cancellationToken);
             return Ok();

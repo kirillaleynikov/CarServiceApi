@@ -3,6 +3,7 @@ using CarService.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using CarService.Common.Entity.InterfaceDB;
 using CarService.Common.Entity.Repositories;
+using CarService.Repositories.Anchors;
 
 namespace CarService.Repositories.Implementations
 {
@@ -26,17 +27,14 @@ namespace CarService.Repositories.Implementations
             .ById(id)
             .FirstOrDefaultAsync(cancellationToken);
 
-        Task<bool> IClientReadRepository.AnyByIdAsync(Guid id, CancellationToken cancellationToken)
-         => reader.Read<Client>()
-             .NotDeletedAt()
-             .ById(id)
-             .AnyAsync(cancellationToken);
-
         Task<Dictionary<Guid, Client>> IClientReadRepository.GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellation)
             => reader.Read<Client>()
                 .NotDeletedAt()
                 .ByIds(ids)
                 .OrderBy(x => x.Name)
-                .ToDictionaryAsync(key => key.Id, cancellation);
+                .ToDictionaryAsync(x => x.Id, cancellation);
+
+        Task<bool> IClientReadRepository.IsNotNullAsync(Guid id, CancellationToken cancellationToken)
+            => reader.Read<Client>().AnyAsync(x => x.Id == id && !x.DeletedAt.HasValue, cancellationToken);
     }
 }

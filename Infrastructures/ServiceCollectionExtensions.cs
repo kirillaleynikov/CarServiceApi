@@ -1,12 +1,12 @@
-﻿using TimeTable203.Api.Infrastructures.Validator;
-using TimeTable203.Common;
-using TimeTable203.Common.Entity.InterfaceDB;
-using TimeTable203.Context;
-using TimeTable203.Repositories;
-using TimeTable203.Services;
-using TimeTable203.Shared;
+﻿using CarService.Api.Infrastructures.Validator;
+using CarService.Common;
+using CarService.Common.Entity.InterfaceDB;
+using CarService.Context;
+using CarService.Repositories;
+using CarService.Services;
+using CarService.Shared;
 
-namespace TimeTable203.Api.Infrastructures
+namespace CarService.Api.Infrastructures
 {
     static internal class ServiceCollectionExtensions
     {

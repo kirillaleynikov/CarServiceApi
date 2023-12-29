@@ -5,6 +5,9 @@ using CarService.Services.Contracts.Models;
 using CarService.Common.Entity.InterfaceDB;
 using CarService.Services.Contracts.Exceptions;
 using CarService.Services.Contracts.Interface;
+using System.Data;
+using CarService.Services.Contracts.ModelsRequest;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CarService.Services.Implementations
 {
@@ -14,22 +17,24 @@ namespace CarService.Services.Implementations
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IPartWriteRepository partWriteRepository;
-
+        private readonly IServiceValidatorService validatorService;
         public PartService(IPartReadRepository partReadRepository,
             IPartWriteRepository partWriteRepository,
             IUnitOfWork unitOfWork,
-            IMapper mapper)
+            IMapper mapper,
+            IServiceValidatorService validatorService)
         {
             this.partReadRepository = partReadRepository;
             this.partWriteRepository = partWriteRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.validatorService = validatorService;
         }
 
         async Task<IEnumerable<PartModel>> IPartService.GetAllAsync(CancellationToken cancellationToken)
         {
             var result = await partReadRepository.GetAllAsync(cancellationToken);
-            return mapper.Map<IEnumerable<PartModel>>(result);
+            return result.Select(x => mapper.Map<PartModel>(x));
         }
 
         async Task<PartModel?> IPartService.GetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -37,59 +42,56 @@ namespace CarService.Services.Implementations
             var item = await partReadRepository.GetByIdAsync(id, cancellationToken);
             if (item == null)
             {
-                throw new CarServiceEntityNotFoundException<Client>(id);
+                throw new CarServiceEntityNotFoundException<Part>(id);
             }
             return mapper.Map<PartModel>(item);
         }
 
-        async Task<PartModel> IPartService.AddAsync(string name, int price, string auto, string country, CancellationToken cancellationToken)
+        async Task<PartModel> IPartService.AddAsync(PartModel model, CancellationToken cancellationToken)
         {
-            var item = new Part
-            {
-                Id = Guid.NewGuid(),
-                Name = name,
-                Price = price,
-                Auto = auto,
-                Country = country
-            };
+            model.Id = Guid.NewGuid();
+            await validatorService.ValidateAsync(model, cancellationToken);
+
+            var item = mapper.Map<Part>(model);
 
             partWriteRepository.Add(item);
             await unitOfWork.SaveChangesAsync(cancellationToken);
+
             return mapper.Map<PartModel>(item);
         }
 
         async Task<PartModel> IPartService.EditAsync(PartModel source, CancellationToken cancellationToken)
         {
-            var targetPart = await partReadRepository.GetByIdAsync(source.Id, cancellationToken);
-            if (targetPart == null)
+            await validatorService.ValidateAsync(source, cancellationToken);
+
+            var targetClient = await partReadRepository.GetByIdAsync(source.Id, cancellationToken);
+            if (targetClient == null)
             {
                 throw new CarServiceEntityNotFoundException<Part>(source.Id);
             }
 
-            targetPart.Name = source.Name;
-            targetPart.Price = source.Price;
-            targetPart.Auto = source.Auto;
-            targetPart.Country = source.Country;
-            partWriteRepository.Update(targetPart);
+            targetClient = mapper.Map<Part>(source);
 
+            partWriteRepository.Update(targetClient);
             await unitOfWork.SaveChangesAsync(cancellationToken);
-            return mapper.Map<PartModel>(targetPart);
+
+            return mapper.Map<PartModel>(targetClient);
         }
 
         async Task IPartService.DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var targetPart = await partReadRepository.GetByIdAsync(id, cancellationToken);
-            if (targetPart == null)
+            var targetClient = await partReadRepository.GetByIdAsync(id, cancellationToken);
+            if (targetClient == null)
             {
                 throw new CarServiceEntityNotFoundException<Part>(id);
             }
 
-            if (targetPart.DeletedAt.HasValue)
+            if (targetClient.DeletedAt.HasValue)
             {
-                throw new CarServiceInvalidOperationException($"Запчасть с идентификатором {id} уже удалена");
+                throw new CarServiceInvalidOperationException($"Запчасть с идентификатором {id} уже удален");
             }
 
-            partWriteRepository.Delete(targetPart);
+            partWriteRepository.Delete(targetClient);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }

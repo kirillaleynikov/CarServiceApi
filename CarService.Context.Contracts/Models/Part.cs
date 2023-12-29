@@ -30,6 +30,9 @@ namespace CarService.Context.Contracts.Models
         /// <summary>
         /// Страна производства
         /// </summary>
+        
         public string Country { get; set; } = string.Empty;
+
+        public ICollection<Repair> Repairs { get; set; }
     }
 }
