@@ -28,6 +28,11 @@ namespace CarService.Context.Contracts.Models
         public Guid ClientId { get; set; }
         public Client ClientName { get; set; }
         /// <summary>
+        /// Имя сотрудника
+        /// </summary>
+        public Guid EmployeeId { get; set; }
+        public Client EmployeeName { get; set; }
+        /// <summary>
         /// Марка машины клиента
         /// </summary>
         public string MarkCar { get; set; } = string.Empty;

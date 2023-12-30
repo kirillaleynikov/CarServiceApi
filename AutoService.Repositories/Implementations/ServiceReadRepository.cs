@@ -22,6 +22,7 @@ namespace CarService.Repositories
             => reader.Read<Service>()
                 .NotDeletedAt()
                 .OrderBy(x => x.Name)
+                .ThenBy(x => x.Price)
                 .ToReadOnlyCollectionAsync(cancellationToken);
 
         Task<Service?> IServiceReadRepository.GetByIdAsync(Guid id, CancellationToken cancellationToken)

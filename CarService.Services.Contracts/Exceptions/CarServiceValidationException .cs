@@ -1,4 +1,4 @@
-﻿using CarService.Shared;
+﻿using CarService.General;
 
 namespace CarService.Services.Contracts.Exceptions
 {

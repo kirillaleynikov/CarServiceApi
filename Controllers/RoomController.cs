@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CarService.Services.Contracts;
-using CarService.Api.Models;
-using CarService.Api.Models.Enums;
-using CarService.Services.Implementations;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using CarService.Services.Contracts.Interface;
+using CarService.Services.Contracts.Models;
+using CarService.API.Models.Response;
+using CarService.API.Models.Request;
+using CarService.API.Exceptions;
+using CarService.API.Models.CreateRequest;
+using CarService.Models.Request;
 
 namespace CarService.Api.Controllers
 {
@@ -11,46 +16,79 @@ namespace CarService.Api.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
+    [ApiExplorerSettings(GroupName = "Room")]
     public class RoomController : ControllerBase
     {
         private readonly IRoomService roomService;
+        private readonly IMapper mapper;
 
-        public RoomController(IRoomService roomService)
+        public RoomController(IRoomService roomService,
+            IMapper mapper
+            )
         {
             this.roomService = roomService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<RoomResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var result = await roomService.GetAllAsync(cancellationToken);
-            return Ok(result.Select(x => new RoomResponse
-            {
-                Id = x.Id,
-                Number = x.Number,
-                Square = x.Square,
-                EmployeeId = x.EmployeeId,
-                RoomType = x.RoomType,
-            }));
+            return Ok(result.Select(x => mapper.Map<RoomResponse>(x)));
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(RoomResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById([Required] Guid id, CancellationToken cancellationToken)
         {
-            var result = await roomService.GetByIdAsync(id, cancellationToken);
-            if (result == null)
-            {
-                return NotFound($"Не удалось найти ремонт с идентификатором {id}");
-            }
+            var item = await roomService.GetByIdAsync(id, cancellationToken);
+            return Ok(mapper.Map<RoomResponse>(item));
+        }
 
-            return Ok(new RoomResponse
-            {
-                Id = result.Id,
-                Number = result.Number,
-                Square = result.Square,
-                EmployeeId = result.EmployeeId,
-                RoomType = result.RoomType,
-            });
+        /// <summary>
+        /// Создаёт новую дисциплину
+        /// </summary>
+        [HttpPost]
+        [ProducesResponseType(typeof(RoomResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiValidationExceptionsDetail), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Add(CreatePartRequest model, CancellationToken cancellationToken)
+        {
+            var roomModel = mapper.Map<RoomModel>(model);
+            var result = await roomService.AddAsync(roomModel, cancellationToken);
+            return Ok(mapper.Map<RoomResponse>(result));
+        }
+
+        /// <summary>
+        /// Редактирует имеющуюся дисциплину
+        /// </summary>
+        [HttpPut]
+        [ProducesResponseType(typeof(RoomResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiValidationExceptionsDetail), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Edit(RoomRequest request, CancellationToken cancellationToken)
+        {
+            var model = mapper.Map<RoomModel>(request);
+            var result = await roomService.EditAsync(model, cancellationToken);
+            return Ok(mapper.Map<RoomResponse>(result));
+        }
+
+        /// <summary>
+        /// Удаляет имеющуюся дисциплину
+        /// </summary>
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status417ExpectationFailed)]
+        public async Task<IActionResult> Delete([Required] Guid id, CancellationToken cancellationToken)
+        {
+            await roomService.DeleteAsync(id, cancellationToken);
+            return Ok();
         }
     }
 }

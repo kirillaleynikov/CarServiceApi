@@ -24,6 +24,10 @@ namespace CarService.Services.Contracts.Models
         /// </summary>
         public ClientModel? ClientName { get; set; }
         /// <summary>
+        /// Имя сотрудника
+        /// </summary>
+        public EmployeeModel? EmployeeName { get; set; }
+        /// <summary>
         /// Марка машины клиента
         /// </summary>
         public string MarkCar { get; set; } = string.Empty;

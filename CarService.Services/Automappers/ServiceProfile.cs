@@ -5,6 +5,7 @@ using CarService.Context.Contracts.Enums;
 using CarService.Context.Contracts.Models;
 using CarService.Services.Contracts.Models;
 using CarService.Services.Contracts.Models.Enums;
+using CarService.Services.Contracts.ModelsRequest;
 
 namespace CarService.Services.Automappers
 {

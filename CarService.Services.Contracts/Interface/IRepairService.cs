@@ -8,7 +8,7 @@ namespace CarService.Services.Contracts.Interface
         /// <summary>
         /// Получить список всех <see cref="RepairModel"/>
         /// </summary>
-        Task<IEnumerable<RepairModel>> GetAllAsync(DateTimeOffset targetDate, CancellationToken cancellationToken);
+        Task<IEnumerable<RepairModel>> GetAllAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Получить <see cref="RepairModel"/> по идентификатору
@@ -18,7 +18,7 @@ namespace CarService.Services.Contracts.Interface
         /// <summary>
         /// Добавляет новый ремонт
         /// </summary>
-        Task<RepairModel> AddAsync(RepairRequestModel repair, CancellationToken cancellationToken);
+        Task<RepairModel> AddAsync(RepairRequestModel model, CancellationToken cancellationToken);
 
         /// <summary>
         /// Редактирует существующее расписание

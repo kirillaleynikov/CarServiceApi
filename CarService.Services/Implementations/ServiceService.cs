@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
-using CarService.Common.Entity.InterfaceDB;
 using CarService.Context.Contracts.Models;
 using CarService.Repositories.Contracts;
+using CarService.Services.Contracts.Models;
+using CarService.Common.Entity.InterfaceDB;
 using CarService.Services.Contracts.Exceptions;
 using CarService.Services.Contracts.Interface;
-using CarService.Services.Contracts.Models;
+using System.Data;
 using CarService.Services.Contracts.ModelsRequest;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CarService.Services.Implementations
 {
@@ -15,22 +17,24 @@ namespace CarService.Services.Implementations
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly IServiceWriteRepository serviceWriteRepository;
-
+        private readonly IServiceValidatorService validatorService;
         public ServiceService(IServiceReadRepository serviceReadRepository,
             IServiceWriteRepository serviceWriteRepository,
             IUnitOfWork unitOfWork,
-            IMapper mapper)
+            IMapper mapper,
+            IServiceValidatorService validatorService)
         {
             this.serviceReadRepository = serviceReadRepository;
             this.serviceWriteRepository = serviceWriteRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.validatorService = validatorService;
         }
 
         async Task<IEnumerable<ServiceModel>> IServiceService.GetAllAsync(CancellationToken cancellationToken)
         {
             var result = await serviceReadRepository.GetAllAsync(cancellationToken);
-            return mapper.Map<IEnumerable<ServiceModel>>(result);
+            return result.Select(x => mapper.Map<ServiceModel>(x));
         }
 
         async Task<ServiceModel?> IServiceService.GetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -43,34 +47,34 @@ namespace CarService.Services.Implementations
             return mapper.Map<ServiceModel>(item);
         }
 
-        async Task<ServiceModel> IServiceService.AddAsync(ServiceRequestModel serviceRequestModel, CancellationToken cancellationToken)
+        async Task<ServiceModel> IServiceService.AddAsync(ServiceModel model, CancellationToken cancellationToken)
         {
-            var item = new Service
-            {
-                Id = Guid.NewGuid(),
-                Name = serviceRequestModel.Name,
-                Price = serviceRequestModel.Price,
-            };
+            model.Id = Guid.NewGuid();
+            await validatorService.ValidateAsync(model, cancellationToken);
+
+            var item = mapper.Map<Service>(model);
 
             serviceWriteRepository.Add(item);
             await unitOfWork.SaveChangesAsync(cancellationToken);
+
             return mapper.Map<ServiceModel>(item);
         }
 
-        async Task<ServiceModel> IServiceService.EditAsync(ServiceRequestModel source, CancellationToken cancellationToken)
+        async Task<ServiceModel> IServiceService.EditAsync(ServiceModel source, CancellationToken cancellationToken)
         {
+            await validatorService.ValidateAsync(source, cancellationToken);
+
             var targetService = await serviceReadRepository.GetByIdAsync(source.Id, cancellationToken);
             if (targetService == null)
             {
                 throw new CarServiceEntityNotFoundException<Service>(source.Id);
             }
 
-            targetService.Name = source.Name;
-            targetService.Price = source.Price;
+            targetService = mapper.Map<Service>(source);
 
             serviceWriteRepository.Update(targetService);
-
             await unitOfWork.SaveChangesAsync(cancellationToken);
+
             return mapper.Map<ServiceModel>(targetService);
         }
 
@@ -79,12 +83,12 @@ namespace CarService.Services.Implementations
             var targetService = await serviceReadRepository.GetByIdAsync(id, cancellationToken);
             if (targetService == null)
             {
-                throw new CarServiceEntityNotFoundException<Service>(id);
+                throw new CarServiceEntityNotFoundException<Room>(id);
             }
 
             if (targetService.DeletedAt.HasValue)
             {
-                throw new CarServiceInvalidOperationException($"Клиент с идентификатором {id} уже удален");
+                throw new CarServiceInvalidOperationException($"Запчасть с идентификатором {id} уже удален");
             }
 
             serviceWriteRepository.Delete(targetService);

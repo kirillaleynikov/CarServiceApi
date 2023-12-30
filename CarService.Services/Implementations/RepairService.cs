@@ -1,176 +1,163 @@
-﻿//using AutoMapper;
-//using CarService.Common.Entity.InterfaceDB;
-//using CarService.Repositories.Contracts;
-//using CarService.Services.Contracts;
-//using CarService.Services.Contracts.Interface;
-//using CarService.Services.Contracts.Models;
-//using Serilog;
-//using System.Security.AccessControl;
+﻿using AutoMapper;
+using CarService.Common.Entity.InterfaceDB;
+using CarService.Repositories.Contracts;
+using CarService.Services.Anchors;
+using CarService.Services.Contracts.Models;
+using CarService.Services;
+using CarService.Services.Contracts.Interface;
+using CarService.Services.Contracts.ModelsRequest;
+using CarService.Context.Contracts.Models;
+using CarService.Services.Contracts.Exceptions;
 
-//namespace CarService.Services.Implementations
-//{
-//    public class RepairService : IRepairService, IServiceAnchor
-//    {
-//        private readonly IRepairReadRepository repairReadRepository;
-//        private readonly IRepairWriteRepository repairWriteRepository;
-//        private readonly IClientReadRepository clientReadRepository;
-//        private readonly IEmployeeReadRepository employeeReadRepository;
-//        private readonly IPartReadRepository partReadRepository;
-//        private readonly IRoomReadRepository roomReadRepository;
-//        private readonly IServiceReadRepository serviceReadRepository;
+namespace CarService.Services.Services
+{
+    internal class RepairService : IRepairService, IServiceAnhor
+    {
+        private readonly IRepairWriteRepository repairWriteRepository;
+        private readonly IRepairReadRepository repairReadRepository;
+        private readonly IEmployeeReadRepository employeeReadRepository;
+        private readonly IClientReadRepository clientReadRepository;
+        private readonly IPartReadRepository partReadRepository;
+        private readonly IServiceReadRepository serviceReadRepository;
+        private readonly IRoomReadRepository roomReadRepository;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
+        private readonly IServiceValidatorService validatorService;
 
-//        public RepairService(IRepairReadRepository repairReadRepository,
-//            IRepairWriteRepository repairWriteRepository,
-//            IClientReadRepository clientReadRepository,
-//            IEmployeeReadRepository employeeReadRepository,
-//            IPartReadRepository partReadRepository,
-//            IRoomReadRepository roomReadRepository,
-//            IServiceReadRepository serviceReadRepository,
-//            IUnitOfWork unitOfWork,
-//            IMapper mapper)
-//        {
-//            this.repairReadRepository = repairReadRepository;
-//            this.repairWriteRepository = repairWriteRepository;
-//            this.clientReadRepository = clientReadRepository;
-//            this.employeeReadRepository = employeeReadRepository;
-//            this.partReadRepository = partReadRepository;
-//            this.roomReadRepository = roomReadRepository;
-//            this.serviceReadRepository = serviceReadRepository;
-//        }
+        public RepairService(IRepairWriteRepository repairWriteRepository, IRepairReadRepository repairReadRepository, IEmployeeReadRepository employeeReadRepository,
+            IClientReadRepository clientReadRepository, IPartReadRepository partReadRepository,
+           IServiceReadRepository serviceReadRepository, IRoomReadRepository roomReadRepository,
+            IMapper mapper, IUnitOfWork unitOfWork, IServiceValidatorService validatorService)
+        {
+            this.repairWriteRepository = repairWriteRepository;
+            this.repairReadRepository = repairReadRepository;
+            this.clientReadRepository = clientReadRepository;
+            this.employeeReadRepository = employeeReadRepository;
+            this.partReadRepository = partReadRepository;
+            this.roomReadRepository = roomReadRepository;
+            this.serviceReadRepository = serviceReadRepository;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.validatorService = validatorService;
+        }
 
-//        async Task<IEnumerable<RepairModel>> IRepairService.GetAllAsync(DateTimeOffset targetDate, CancellationToken cancellationToken)
-//        {
-//            var repair = await repairReadRepository.GetAllByDateAsync(targetDate.Date, targetDate.Date.AddDays(1).AddMilliseconds(-1), cancellationToken);
+        async Task<RepairModel> IRepairService.AddAsync(RepairRequestModel model, CancellationToken cancellationToken)
+        {
+            model.Id = Guid.NewGuid();
+            await validatorService.ValidateAsync(model, cancellationToken);
 
-//            var clientIds = repair.Select(x => x.ClientId).Distinct();
-//            var employeeIds = repair.Select(x => x.EmployeeId).Distinct();
-//            var partIds = repair.Select(x => x.PartId).Distinct();
-//            var roomIds = repair.Select(x => x.RoomId).Distinct();
-//            var serviceIds = repair.Select(x => x.ServiceId).Distinct();
+            var repair = mapper.Map<Repair>(model);
+            repairWriteRepository.Add(repair);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-//            var clientDictionary = await clientReadRepository.GetByIdsAsync(clientIds, cancellationToken);
-//            var employeeDictionary = await employeeReadRepository.GetByIdsAsync(employeeIds, cancellationToken);
-//            var partDictionary = await partReadRepository.GetByIdsAsync(partIds, cancellationToken);
+            return await GetTicketModelOnMapping(repair, cancellationToken);
+        }
 
-//            var listRepairModel = new List<RepairModel>();
-//            foreach (var repair in repairs)
-//            {
-//                cancellationToken.ThrowIfCancellationRequested();
-//                if (!clientDictionary.TryGetValue(repair.ClientId, out var client))
-//                {
-//                    Log.Warning("Запрос вернул null(Client) IClientService.GetAllAsync");
-//                    continue;
-//                }
-//                if (!groupDictionary.TryGetValue(timeTableItem.GroupId, out var group))
-//                {
-//                    Log.Warning("Запрос вернул null(Discipline) ITimeTableItemService.GetAllAsync");
-//                    continue;
-//                }
-//                if (timeTableItem.TeacherId == null ||
-//                    !teacherDictionary.TryGetValue(timeTableItem.TeacherId.Value, out var teacher))
-//                {
-//                    Log.Warning("Запрос вернул null(TeacherId) ITimeTableItemService.GetAllAsync");
-//                    continue;
-//                }
-//                var repair = mapper.Map<RepairModel>(repair);
-//                repair.Discipline = mapper.Map<ClientModel>(client);
-//                repair.Group = mapper.Map<GroupModel>(group);
-//                timeTable.Teacher = mapper.Map<PersonModel>(teacher);
+        async Task IRepairService.DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var targetTicket = await repairReadRepository.GetByIdAsync(id, cancellationToken);
 
-//                listTimeTableItemModel.Add(timeTable);
-//            }
+            if (targetTicket == null)
+            {
+                throw new CarServiceEntityNotFoundException<Repair>(id);
+            }
 
-//            return listTimeTableItemModel;
-//        }
+            if (targetTicket.DeletedAt.HasValue)
+            {
+                throw new CarServiceInvalidOperationException($"Билет с идентификатором {id} уже удален");
+            }
 
-//        async Task<RepairModel?> IRepairService.GetByIdAsync(Guid id, CancellationToken cancellationToken)
-//        {
-//            var item = await repairReadRepository.GetByIdAsync(id, cancellationToken);
-//            if (item == null)
-//            {
-//                return null;
-//            }
-//            var discipline = await disciplineReadRepository.GetByIdAsync(item.DisciplineId, cancellationToken);
-//            var group = await groupReadRepository.GetByIdAsync(item.GroupId, cancellationToken);
-//            var timeTable = mapper.Map<TimeTableItemModel>(item);
-//            timeTable.Discipline = discipline != null
-//                ? mapper.Map<DisciplineModel>(discipline)
-//                : null;
-//            timeTable.Group = group != null
-//               ? mapper.Map<GroupModel>(group)
-//               : null;
-//            if (item.TeacherId != null)
-//            {
-//                var personDictionary = await employeeReadRepository.GetPersonByEmployeeIdsAsync(new[] { item.TeacherId.Value }, cancellationToken);
-//                timeTable.Teacher = personDictionary.TryGetValue(item.TeacherId.Value, out var teacher)
-//                  ? mapper.Map<PersonModel>(teacher)
-//                  : null;
-//            }
-//            return timeTable;
-//        }
+            repairWriteRepository.Delete(targetTicket);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+        }
 
-//        async Task<TimeTableItemModel> ITimeTableItemService.AddAsync(TimeTableItemRequestModel timeTable, CancellationToken cancellationToken)
-//        {
-//            var item = new TimeTableItem
-//            {
-//                Id = Guid.NewGuid(),
-//                StartDate = timeTable.StartDate,
-//                EndDate = timeTable.EndDate,
-//                RoomNumber = timeTable.RoomNumber,
-//                TeacherId = timeTable.Teacher,
-//                DisciplineId = timeTable.Discipline,
-//                GroupId = timeTable.Group,
-//            };
+        async Task<RepairModel> IRepairService.EditAsync(RepairRequestModel model, CancellationToken cancellationToken)
+        {
+            await validatorService.ValidateAsync(model, cancellationToken);
 
-//            timeTableItemWriteRepository.Add(item);
-//            await unitOfWork.SaveChangesAsync(cancellationToken);
-//            return mapper.Map<TimeTableItemModel>(item);
-//        }
+            var repair = await repairReadRepository.GetByIdAsync(model.Id, cancellationToken);
 
-//        async Task<TimeTableItemModel> ITimeTableItemService.EditAsync(TimeTableItemRequestModel source, CancellationToken cancellationToken)
-//        {
-//            var targetTimeTableItem = await timeTableItemReadRepository.GetByIdAsync(source.Id, cancellationToken);
+            if (repair == null)
+            {
+                throw new CarServiceEntityNotFoundException<Repair>(model.Id);
+            }
 
-//            if (targetTimeTableItem == null)
-//            {
-//                throw new TimeTableEntityNotFoundException<TimeTableItem>(source.Id);
-//            }
+            repair = mapper.Map<Repair>(model);
+            repairWriteRepository.Update(repair);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-//            targetTimeTableItem.StartDate = source.StartDate;
-//            targetTimeTableItem.EndDate = source.EndDate;
-//            targetTimeTableItem.RoomNumber = source.RoomNumber;
+            return await GetTicketModelOnMapping(repair, cancellationToken);
+        }
 
-//            var employee = await employeeReadRepository.GetByIdAsync(source.Teacher, cancellationToken);
-//            targetTimeTableItem.TeacherId = employee!.Id;
-//            targetTimeTableItem.Teacher = employee;
+        async Task<IEnumerable<RepairModel>> IRepairService.GetAllAsync(CancellationToken cancellationToken)
+        {
+            var repairs = await repairReadRepository.GetAllAsync(cancellationToken);
+            var employees = await employeeReadRepository
+                .GetByIdsAsync(repairs.Select(x => x.EmployeeId).Distinct(), cancellationToken);
 
-//            var group = await groupReadRepository.GetByIdAsync(source.Group, cancellationToken);
-//            targetTimeTableItem.GroupId = group!.Id;
-//            targetTimeTableItem.Group = group;
+            var clients = await clientReadRepository
+                .GetByIdsAsync(repairs.Select(x => x.ClientId).Distinct(), cancellationToken);
 
-//            var discipline = await disciplineReadRepository.GetByIdAsync(source.Discipline, cancellationToken);
-//            targetTimeTableItem.DisciplineId = discipline!.Id;
-//            targetTimeTableItem.Discipline = discipline;
+            var parts = await partReadRepository
+                .GetByIdsAsync(repairs.Select(x => x.PartId).Distinct(), cancellationToken);
 
-//            timeTableItemWriteRepository.Update(targetTimeTableItem);
-//            await unitOfWork.SaveChangesAsync(cancellationToken);
-//            return mapper.Map<TimeTableItemModel>(targetTimeTableItem);
-//        }
+            var rooms = await roomReadRepository
+                .GetByIdsAsync(repairs.Select(x => x.RoomId).Distinct(), cancellationToken);
 
-//        async Task ITimeTableItemService.DeleteAsync(Guid id, CancellationToken cancellationToken)
-//        {
-//            var targetTimeTableItem = await timeTableItemReadRepository.GetByIdAsync(id, cancellationToken);
-//            if (targetTimeTableItem == null)
-//            {
-//                throw new TimeTableEntityNotFoundException<TimeTableItem>(id);
-//            }
-//            if (targetTimeTableItem.DeletedAt.HasValue)
-//            {
-//                throw new TimeTableInvalidOperationException($"Расписание с идентификатором {id} уже удален");
-//            }
+            var services = await serviceReadRepository
+                .GetByIdsAsync(repairs.Select(x => x.ServiceId).Distinct(), cancellationToken);
 
-//            timeTableItemWriteRepository.Delete(targetTimeTableItem);
-//            await unitOfWork.SaveChangesAsync(cancellationToken);
-//        }
-//    }
-//}
+
+            var result = new List<RepairModel>();
+
+            foreach (var repair in repairs)
+            {
+                if (!employees.TryGetValue(repair.EmployeeId, out var employee) ||
+                !clients.TryGetValue(repair.ClientId, out var client) ||
+                !parts.TryGetValue(repair.RepairId, out var part) ||
+                !rooms.TryGetValue(repair.RoomId, out var room) ||
+                !services.TryGetValue(repair.ServiceId, out var service))
+                {
+                    continue;
+                }
+                else
+                {
+                    var RepairModel = mapper.Map<RepairModel>(repair);
+
+                    RepairModel.EmployeeName = mapper.Map<EmployeeModel>(employee);
+                    RepairModel.PartToChange = mapper.Map<PartModel>(part);
+                    RepairModel.RoomNumber = mapper.Map<RoomModel>(room);
+                    RepairModel.Service = mapper.Map<ServiceModel>(service);
+                    RepairModel.ClientName = mapper.Map<ClientModel>(client);
+
+                    result.Add(RepairModel);
+                }
+            }
+            return result;
+        }
+
+        async Task<RepairModel?> IRepairService.GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var item = await repairReadRepository.GetByIdAsync(id, cancellationToken);
+
+            if (item == null)
+            {
+                throw new CarServiceEntityNotFoundException<Repair>(id);
+            }
+
+            return await GetTicketModelOnMapping(item, cancellationToken);
+        }
+
+        async private Task<RepairModel> GetTicketModelOnMapping(Repair repair, CancellationToken cancellationToken)
+        {
+            var RepairModel = mapper.Map<RepairModel>(repair);
+            RepairModel.EmployeeName = mapper.Map<EmployeeModel>(await employeeReadRepository.GetByIdAsync(repair.EmployeeId, cancellationToken));
+            RepairModel.PartToChange = mapper.Map<PartModel>(await partReadRepository.GetByIdAsync(repair.PartId, cancellationToken));
+            RepairModel.RoomNumber = mapper.Map<RoomModel>(await roomReadRepository.GetByIdAsync(repair.RoomId, cancellationToken));
+            RepairModel.Service = mapper.Map<ServiceModel>(await serviceReadRepository.GetByIdAsync(repair.ServiceId, cancellationToken));
+            RepairModel.ClientName = mapper.Map<ClientModel>(await clientReadRepository.GetByIdAsync(repair.ClientId, cancellationToken));
+
+            return RepairModel;
+        }
+    }
+}

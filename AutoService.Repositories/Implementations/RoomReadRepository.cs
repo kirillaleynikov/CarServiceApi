@@ -21,6 +21,7 @@ namespace CarService.Repositories
             => reader.Read<Room>()
                 .NotDeletedAt()
                 .OrderBy(x => x.Number)
+                .ThenBy(x => x.Square)
                 .ToReadOnlyCollectionAsync(cancellationToken);
 
         Task<Room?> IRoomReadRepository.GetByIdAsync(Guid id, CancellationToken cancellationToken)

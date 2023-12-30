@@ -1,14 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using CarService.Api.Attribute;
-using CarService.Api.Infrastructures.Validator;
-using CarService.Api.Models;
-using CarService.Api.ModelsRequest.Client;
 using CarService.Services.Contracts.Interface;
 using CarService.Services.Contracts.Models;
-using CarService.Api.ModelsRequest.Employee;
-using CarService.Services.Implementations;
+using CarService.API.Models.Response;
+using CarService.API.Models.Request;
+using CarService.API.Exceptions;
+using CarService.API.Models.CreateRequest;
 
 namespace CarService.Api.Controllers
 {
@@ -21,7 +19,6 @@ namespace CarService.Api.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeService employeeService;
-        private readonly IApiValidatorService validatorService;
         private readonly IMapper mapper;
 
         public EmployeeController(IEmployeeService employeeService,
@@ -33,33 +30,34 @@ namespace CarService.Api.Controllers
         }
 
         [HttpGet]
-        [ApiOk(typeof(IEnumerable<EmployeeResponse>))]
+        [ProducesResponseType(typeof(IEnumerable<EmployeeResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var result = await employeeService.GetAllAsync(cancellationToken);
-            return Ok(mapper.Map<IEnumerable<EmployeeResponse>>(result));
+            return Ok(result.Select(x => mapper.Map<EmployeeResponse>(x)));
         }
 
         [HttpGet("{id:guid}")]
-        [ApiOk(typeof(EmployeeResponse))]
-        [ApiNotFound]
-        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(EmployeeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById([Required] Guid id, CancellationToken cancellationToken)
         {
-            var result = await employeeService.GetByIdAsync(id, cancellationToken);
-            return Ok(mapper.Map<EmployeeResponse>(result));
+            var item = await employeeService.GetByIdAsync(id, cancellationToken);
+            return Ok(mapper.Map<EmployeeResponse>(item));
         }
 
         /// <summary>
         /// Создаёт новую дисциплину
         /// </summary>
         [HttpPost]
-        [ApiOk(typeof(EmployeeResponse))]
-        [ApiConflict]
-        public async Task<IActionResult> Create(CreateEmployeeRequest request, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(EmployeeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiValidationExceptionsDetail), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Add(CreateEmployeeRequest model, CancellationToken cancellationToken)
         {
-            await validatorService.ValidateAsync(request, cancellationToken);
-
-            var result = await requestService.AddAsync(request.Name, request.DateOfBirth, request.PhoneNumber, cancellationToken);
+            var employeeModel = mapper.Map<EmployeeModel>(model);
+            var result = await employeeService.AddAsync(employeeModel, cancellationToken);
             return Ok(mapper.Map<EmployeeResponse>(result));
         }
 
@@ -67,13 +65,13 @@ namespace CarService.Api.Controllers
         /// Редактирует имеющуюся дисциплину
         /// </summary>
         [HttpPut]
-        [ApiOk(typeof(EmployeeResponse))]
-        [ApiNotFound]
-        [ApiConflict]
-        public async Task<IActionResult> Edit(ClientRequest request, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(EmployeeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiValidationExceptionsDetail), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Edit(EmployeeRequest request, CancellationToken cancellationToken)
         {
-            await validatorService.ValidateAsync(request, cancellationToken);
-
             var model = mapper.Map<EmployeeModel>(request);
             var result = await employeeService.EditAsync(model, cancellationToken);
             return Ok(mapper.Map<EmployeeResponse>(result));
@@ -83,10 +81,10 @@ namespace CarService.Api.Controllers
         /// Удаляет имеющуюся дисциплину
         /// </summary>
         [HttpDelete("{id:guid}")]
-        [ApiOk(typeof(EmployeeResponse))]
-        [ApiNotFound]
-        [ApiNotAcceptable]
-        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiExceptionsDetail), StatusCodes.Status417ExpectationFailed)]
+        public async Task<IActionResult> Delete([Required] Guid id, CancellationToken cancellationToken)
         {
             await employeeService.DeleteAsync(id, cancellationToken);
             return Ok();

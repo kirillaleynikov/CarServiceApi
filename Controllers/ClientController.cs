@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using CarService.Api.Infrastructures.Validator;
-using CarService.Api.Models;
-using CarService.Api.ModelsRequest.Client;
 using CarService.Services.Contracts.Interface;
 using CarService.Services.Contracts.Models;
-using CarService.Api.ModelsRequest.Client;
-using CarService.Api.Models.Exceptions;
+using CarService.API.Models.Response;
+using CarService.API.Models.Request;
+using CarService.API.Models.CreateRequest;
+using CarService.API.Exceptions;
 
 namespace CarService.Api.Controllers
 {

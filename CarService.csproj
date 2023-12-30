@@ -23,13 +23,18 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.0.0" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,17 +42,6 @@
     <ProjectReference Include="CarService.Context\CarServiceContext.csproj" />
     <ProjectReference Include="CarService.General\CarService.General.csproj" />
     <ProjectReference Include="CarService.Services\CarService.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ModelsRequest\Service\" />
-    <Folder Include="ModelsRequest\Room\" />
-    <Folder Include="ModelsRequest\Repair\" />
-    <Folder Include="ModelsRequest\Part\" />
-    <Folder Include="Validators\Repair\" />
-    <Folder Include="Validators\Room\" />
-    <Folder Include="Validators\Service\" />
-    <Folder Include="Validators\Part\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,7 +8,7 @@ namespace CarService.Repositories
     {
         public static void RegistrationRepository(this IServiceCollection service)
         {
-            service.RegistrationOnInterface<IRepositoryAnchor>(ServiceLifetime.Scoped);
+            //service.RegistrationOnInterface<IRepositoryAnchor>(ServiceLifetime.Scoped);
         }
     }
 }
